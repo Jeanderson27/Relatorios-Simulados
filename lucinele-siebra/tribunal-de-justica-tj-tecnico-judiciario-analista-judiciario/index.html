@@ -1,0 +1,639 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório de Desempenho – Lucinele Siebra | TJAL 2024</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --primary: #00637f;
+    --secondary: #0c91b7;
+    --tertiary: #49bfe0;
+    --bg: #cceffe;
+    --white: #ffffff;
+    --dark: #1a2e35;
+    --gray: #5a7a85;
+    --light-gray: #e8f6fb;
+    --success: #2e9e6b;
+    --warning: #e0952e;
+    --danger: #c0392b;
+    --radius: 12px;
+    --shadow: 0 4px 20px rgba(0,99,127,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--dark);
+    min-height: 100vh;
+  }
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: var(--white);
+    padding: 28px 24px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -30px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .header-logo {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.85;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-size: clamp(20px, 4vw, 28px);
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .header .subtitle {
+    font-size: 13px;
+    opacity: 0.8;
+    margin-bottom: 16px;
+  }
+  .header-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+  .badge {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  /* TABS */
+  .tabs-wrapper {
+    background: var(--white);
+    border-bottom: 2px solid var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,99,127,0.08);
+    overflow-x: auto;
+  }
+  .tabs {
+    display: flex;
+    min-width: max-content;
+    padding: 0 16px;
+  }
+  .tab-btn {
+    padding: 14px 18px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray);
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+  }
+  .tab-btn:hover { color: var(--secondary); }
+  .tab-btn.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+  }
+  /* CONTENT */
+  .content {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  /* CARDS */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .icon { font-size: 18px; }
+  /* STAT GRID */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: var(--radius);
+    padding: 18px 14px;
+    text-align: center;
+    color: var(--white);
+  }
+  .stat-card.success { background: linear-gradient(135deg, #1e7e5a, var(--success)); }
+  .stat-card.warning { background: linear-gradient(135deg, #c07820, var(--warning)); }
+  .stat-card.danger  { background: linear-gradient(135deg, #922b21, var(--danger)); }
+  .stat-card.neutral { background: linear-gradient(135deg, #3a6370, var(--gray)); }
+  .stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 11px;
+    opacity: 0.88;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  /* VERDICT */
+  .verdict-card {
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .verdict-card.approved {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    border: 2px solid #28a745;
+  }
+  .verdict-card.reproved {
+    background: linear-gradient(135deg, #fde8e8, #fad2d2);
+    border: 2px solid var(--danger);
+  }
+  .verdict-emoji { font-size: 40px; margin-bottom: 8px; }
+  .verdict-title { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+  .verdict-text { font-size: 13px; color: var(--gray); }
+  /* PROGRESS BAR */
+  .progress-wrap { margin-bottom: 12px; }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+  .progress-bar {
+    height: 10px;
+    background: var(--light-gray);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.8s ease;
+  }
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    background: var(--primary);
+    color: var(--white);
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--light-gray); }
+  tr:hover td { background: var(--light-gray); }
+  .correct { color: var(--success); font-weight: 700; }
+  .wrong   { color: var(--danger);  font-weight: 700; }
+  /* TAGS */
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .tag-ok   { background: #d4edda; color: #155724; }
+  .tag-fail { background: #fde8e8; color: #721c24; }
+  /* CHART CONTAINERS */
+  .chart-box {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  .chart-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .chart-container { position: relative; height: 280px; }
+  /* REDACAO */
+  .redacao-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .crit-card {
+    background: var(--light-gray);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+    border-left: 4px solid var(--secondary);
+  }
+  .crit-name { font-size: 11px; font-weight: 700; color: var(--gray); text-transform: uppercase; margin-bottom: 6px; }
+  .crit-val  { font-size: 22px; font-weight: 800; color: var(--primary); }
+  .crit-max  { font-size: 11px; color: var(--gray); }
+  /* ACCORDION */
+  .acc-item { margin-bottom: 8px; }
+  .acc-header {
+    background: var(--light-gray);
+    border-radius: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--primary);
+    border: 1px solid rgba(0,99,127,0.1);
+    transition: background 0.2s;
+  }
+  .acc-header:hover { background: #b8e8f7; }
+  .acc-arrow { transition: transform 0.3s; font-size: 16px; }
+  .acc-body {
+    display: none;
+    padding: 14px 16px;
+    background: var(--white);
+    border: 1px solid rgba(0,99,127,0.1);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--dark);
+  }
+  .acc-item.open .acc-arrow { transform: rotate(180deg); }
+  .acc-item.open .acc-body  { display: block; }
+  /* INFO ROWS */
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--light-gray);
+    font-size: 13px;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-label { color: var(--gray); font-weight: 600; }
+  .info-val   { font-weight: 700; color: var(--dark); }
+  /* AVISO */
+  .aviso {
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    border-left: 5px solid;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .aviso-info    { background: #e8f4f9; border-color: var(--secondary); }
+  .aviso-warning { background: #fef9e7; border-color: var(--warning); }
+  .aviso-success { background: #eafaf1; border-color: var(--success); }
+  .aviso-danger  { background: #fde8e8; border-color: var(--danger); }
+  .aviso-title   { font-weight: 800; margin-bottom: 4px; font-size: 14px; }
+  /* JORNADA */
+  .journey-item {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 4px;
+    position: relative;
+  }
+  .journey-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 36px;
+  }
+  .journey-dot {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+  .journey-line {
+    flex: 1;
+    width: 2px;
+    background: var(--light-gray);
+    margin: 4px 0;
+    min-height: 20px;
+  }
+  .journey-content {
+    padding-bottom: 20px;
+    flex: 1;
+  }
+  .journey-title { font-weight: 700; font-size: 14px; margin-bottom: 3px; }
+  .journey-desc  { font-size: 12px; color: var(--gray); line-height: 1.5; }
+  /* REC ITEMS */
+  .rec-item {
+    background: var(--light-gray);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border-left: 4px solid var(--secondary);
+  }
+  .rec-materia { font-size: 11px; font-weight: 700; color: var(--secondary); text-transform: uppercase; margin-bottom: 4px; }
+  .rec-title   { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .rec-body    { font-size: 13px; color: var(--gray); line-height: 1.5; }
+  /* CALC TABLE */
+  .calc-table { width: 100%; font-size: 13px; }
+  .calc-table th { background: var(--primary); color: #fff; padding: 10px 12px; }
+  .calc-table td { padding: 9px 12px; border-bottom: 1px solid var(--light-gray); }
+  .calc-table tr:last-child td { font-weight: 800; background: var(--light-gray); }
+  /* NOTA FINAL DESTAQUE */
+  .nota-destaque {
+    text-align: center;
+    padding: 24px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: var(--radius);
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  .nota-destaque .big { font-size: 56px; font-weight: 900; line-height: 1; }
+  .nota-destaque .lbl { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: var(--gray);
+    background: var(--white);
+    margin-top: 24px;
+  }
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .tab-btn { padding: 12px 12px; font-size: 12px; }
+    .chart-container { height: 220px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">⚖️ Aprendly — Relatório de Desempenho</div>
+  <h1>Lucinele Siebra</h1>
+  <div class="subtitle">Simulado 1 · TJAL 2024 · Gerado automaticamente</div>
+  <div class="header-badges">
+    <span class="badge">🏛️ Tribunal de Justiça</span>
+    <span class="badge">📋 Técnico Judiciário</span>
+    <span class="badge">⚖️ Analista Judiciário – AL</span>
+    <span class="badge">📄 Novo Edital</span>
+    <span class="badge">🥇 1º Simulado</span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrapper">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('resumo',this)">📊 Resumo</button>
+    <button class="tab-btn" onclick="showTab('jornada',this)">🗺️ Jornada</button>
+    <button class="tab-btn" onclick="showTab('materias',this)">📚 Por Matéria</button>
+    <button class="tab-btn" onclick="showTab('graficos',this)">📈 Gráficos</button>
+    <button class="tab-btn" onclick="showTab('calculo',this)">🧮 Cálculo</button>
+    <button class="tab-btn" onclick="showTab('recomendacoes',this)">💡 Recomendações</button>
+    <button class="tab-btn" onclick="showTab('avisos',this)">⚠️ Avisos</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ===================== RESUMO ===================== -->
+  <div id="tab-resumo" class="tab-panel active">
+
+    <div class="verdict-card approved">
+      <div class="verdict-emoji">🎉</div>
+      <div class="verdict-title" style="color:#155724">APROVADA NA NOTA OBJETIVA!</div>
+      <div class="verdict-text">Sua nota objetiva <strong>supera</strong> o corte geral de 6,00 pontos. Excelente desempenho no 1º simulado!</div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-value">60</div>
+        <div class="stat-label">Questões totais</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-value" id="acertos-total">—</div>
+        <div class="stat-label">Acertos</div>
+      </div>
+      <div class="stat-card danger">
+        <div class="stat-value" id="erros-total">—</div>
+        <div class="stat-label">Erros</div>
+      </div>
+      <div class="stat-card warning">
+        <div class="stat-value" id="pct-total">—</div>
+        <div class="stat-label">Aproveitamento</div>
+      </div>
+    </div>
+
+    <div class="nota-destaque">
+      <div class="lbl">NOTA OBJETIVA (escala 0–10)</div>
+      <div class="big" id="nota-obj">—</div>
+      <div class="lbl">Corte geral: 6,00 · Cotas: 4,80</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📝</span> Redação – Nota Final</div>
+      <div class="redacao-grid">
+        <div class="crit-card">
+          <div class="crit-name">Recorte Temático</div>
+          <div class="crit-val">2,0</div>
+          <div class="crit-max">peso máx.: 2,0</div>
+        </div>
+        <div class="crit-card">
+          <div class="crit-name">Interpretação Crítica</div>
+          <div class="crit-val">1,0</div>
+          <div class="crit-max">peso máx.: —</div>
+        </div>
+        <div class="crit-card">
+          <div class="crit-name">Progressão</div>
+          <div class="crit-val">2,0</div>
+          <div class="crit-max">peso máx.: —</div>
+        </div>
+        <div class="crit-card">
+          <div class="crit-name">Propriedade Vocabular</div>
+          <div class="crit-val">0,6</div>
+          <div class="crit-max">ponto de atenção</div>
+        </div>
+        <div class="crit-card">
+          <div class="crit-name">Coesão Textual</div>
+          <div class="crit-val">1,0</div>
+          <div class="crit-max">peso máx.: —</div>
+        </div>
+        <div class="crit-card" style="border-color:var(--danger)">
+          <div class="crit-name">Morfossintaxe</div>
+          <div class="crit-val" style="color:var(--danger)">0,3</div>
+          <div class="crit-max">⚠️ critério crítico</div>
+        </div>
+      </div>
+      <div style="text-align:center; padding:16px; background:linear-gradient(135deg,#e8f4f9,#d0edf8); border-radius:10px;">
+        <div style="font-size:13px;color:var(--gray);font-weight:700;margin-bottom:4px;">TOTAL DA REDAÇÃO</div>
+        <div style="font-size:40px;font-weight:900;color:var(--primary)">6,9 <span style="font-size:18px;color:var(--gray)">/ 10</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🏆</span> Aproveitamento por Matéria</div>
+      <div id="progress-materias"></div>
+    </div>
+
+  </div>
+
+  <!-- ===================== JORNADA ===================== -->
+  <div id="tab-jornada" class="tab-panel">
+    <div class="card">
+      <div class="card-title"><span class="icon">🗺️</span> Sua Jornada no Simulado 1</div>
+
+      <div class="journey-item">
+        <div class="journey-left">
+          <div class="journey-dot" style="background:#e8f4f9;color:var(--primary)">🎯</div>
+          <div class="journey-line"></div>
+        </div>
+        <div class="journey-content">
+          <div class="journey-title">Início do Simulado – TJAL 2024</div>
+          <div class="journey-desc">Lucinele ingressou no seu primeiro simulado para o cargo de Técnico Judiciário / Analista Judiciário – TJ de Alagoas, enfrentando 60 questões objetivas e uma redação avaliada por 6 critérios distintos.</div>
+        </div>
+      </div>
+
+      <div class="journey-item">
+        <div class="journey-left">
+          <div class="journey-dot" style="background:#d4edda;color:#155724">📖</div>
+          <div class="journey-line"></div>
+        </div>
+        <div class="journey-content">
+          <div class="journey-title">Bloco 1 – Língua Portuguesa (Q1–Q20)</div>
+          <div class="journey-desc">Das 20 questões de LP, Lucinele acertou <strong>16</strong> e errou <strong>4</strong> (Q4, Q15, Q16, Q17), atingindo <strong>80% de aproveitamento</strong>. Ponto forte da prova objetiva!</div>
+        </div>
+      </div>
+
+      <div class="journey-item">
+        <div class="journey-left">
+          <div class="journey-dot" style="background:#fef9e7;color:#856404">⚖️</div>
+          <div class="journey-line"></div>
+        </div>
+        <div class="journey-content">
+          <div class="journey-title">Bloco 2 – Legislação Específica – AL (Q21–Q30)</div>
+          <div class="journey-desc">Das 10 questões, Lucinele acertou <strong>7</strong> e errou <strong>3</strong> (Q23, Q25, Q28), com <strong>70% de aproveitamento</strong>. Desempenho sólido, com espaço para aprimorar legislação específica do TJ-AL.</div>
+        </div>
+      </div>
+
+      <div class="journey-item">
+        <div class="journey-left">
+          <div class="journey-dot" style="background:#d4edda;color:#155724">📜</div>
+          <div class="journey-line"></div>
+        </div>
+        <div class="journey-content">
+          <div class="journey-title">Bloco 3 – Direito Administrativo (Q31–Q35)</div>
+          <div class="journey-desc">Resultado <strong>perfeito: 5/5 (100%)</strong>. Demonstra domínio completo do conteúdo de Adm. neste simulado.</div>
+        </div>
+      </div>
+
+      <div class="journey-item">
+        <div class="journey-left">
+          <div class="journey-dot" style="background:#d4edda;color:#155724">🏛️</div>
+          <div class="journey-line"></div>
+        </div>
+        <div class="journey-content">
+          <div class="journey-title">Bloco 4 – Direito Constitucional (Q36–Q40)</div>
+          <div class="journey-desc">Mais um resultado <strong>perfeito: 5/5 (100%)</strong>. Domínio robusto da Constituição Federal aplicado ao contexto do TJAL.</div>
+        </div>
+      </div>
+
+      <div class="journey-item">
+        <div class="journey-left">
+          <div class="journey-dot" style="background:#d4edda;color:#155724">⚖️</div>
+          <div class="journey-line"></div>
+        </div>
+        <div class="journey-content">
+          <div class="journey-title">Bloco 5 – Direito Civil (Q41–Q45)</div>
+          <div class="journey-desc"><strong>5/5 (100%)</strong> de acertos. Desempenho excelente e consistente em Direito Civil.</div>
+        </div>
+      </div>
+
+      <div class="journey-item">
+        <div class="journey-left">
+          <div class="journey-dot" style="background:#fef9e7;color:#856404">📋</div>
+          <div class="journey-line"></div>
+        </div>
+        <div class="journey-content">
+          <div class="journey-title">Bloco 6 – Direito Processual Civil (Q46–Q50)</div>
+          <div class="journey-desc">Acertou <strong>4/5 (80%)</strong>. Erro na Q48 indica atenção necessária em procedimentos específicos do CPC.</div>
+        </div>
+      </div>
+
+      <div class="journey-item">
+        <div class="journey-left">
+          <div class="journey-dot" style="background:#fef9e7;color:#856404">🔒</div>
+          <div class="journey-line"></div>
+        </div>
+        <div class="journey-content">
+          <div class="journey-title">Bloco 7 – Direito Penal (Q51–Q55)</div>
+          <div class="journey-desc">Acertou <strong>4/5 (80%)</strong>. Erro na Q53 requer revisão de tipos penais específicos.</div>
+        </div>
+      </div>
+
+      <div class="journey-item">
+        <div class="journey-left">
+          <div class="journey-dot" style="background:#fde8e8;color:#721c24">⚠️</div>
+          <div class="journey-line"></div>
+        </div>
+        <div class="journey-content">
+          <div class="journey-title">Bloco 8 – Direito Processual Penal (Q56–Q60)</div>
+          <div class="journey-desc">Acertou <strong>3/5 (60%)</strong>. Erros nas Q57 e Q59. Menor aproveitamento do simulado — foco de estudo prioritário!</div>
+        </div>
+      </div>
+
+      <div class="journey-item">
+        <div class="journey-left">
+          <div class="journey-dot" style="background:#d4edda;color:#155724">✅</div>
+        </div>
+        <div class="journey-content">
+          <div class="journey-title">Resultado Final – Aprovada no corte geral!</div>
+          <div class="journey-desc">Nota objetiva calculada: <strong>8,17/10</strong> · Nota redação: <strong>6,9/10</strong>. Primeiro simulado com desempenho muito acima do corte. Siga nessa trajetória!</div>
+        </div>
+      </div>
+    </div>
+  </div
