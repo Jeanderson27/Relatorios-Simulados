@@ -4,37 +4,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Relatório de Desempenho – Lucinele Siebra | TJAL 2024</title>
+<title>Relatório de Desempenho - Aprendly</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: #cceffe; min-height: 100vh; color: #1a2e38; }
   :root {
     --primary: #00637f;
     --secondary: #0c91b7;
     --tertiary: #49bfe0;
     --bg: #cceffe;
     --white: #ffffff;
-    --dark: #1a2e35;
-    --gray: #5a7a85;
-    --light-gray: #e8f6fb;
-    --success: #2e9e6b;
-    --warning: #e0952e;
-    --danger: #c0392b;
-    --radius: 12px;
-    --shadow: 0 4px 20px rgba(0,99,127,0.12);
+    --success: #16a34a;
+    --danger: #dc2626;
+    --warning: #d97706;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-500: #64748b;
+    --gray-700: #334155;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: var(--bg);
-    color: var(--dark);
-    min-height: 100vh;
-  }
+  .app-wrapper { max-width: 1100px; margin: 0 auto; padding: 20px 16px 40px; }
+
   /* HEADER */
   .header {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-    color: var(--white);
-    padding: 28px 24px 24px;
-    text-align: center;
+    background: linear-gradient(135deg, #00637f 0%, #0c91b7 60%, #49bfe0 100%);
+    border-radius: 16px;
+    padding: 32px 28px 24px;
+    color: white;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 32px rgba(0,99,127,0.25);
     position: relative;
     overflow: hidden;
   }
@@ -43,597 +46,802 @@
     position: absolute;
     top: -40px; right: -40px;
     width: 200px; height: 200px;
+    background: rgba(255,255,255,0.07);
     border-radius: 50%;
-    background: rgba(255,255,255,0.06);
   }
   .header::after {
     content: '';
     position: absolute;
-    bottom: -60px; left: -30px;
+    bottom: -60px; left: -20px;
     width: 160px; height: 160px;
-    border-radius: 50%;
     background: rgba(255,255,255,0.05);
+    border-radius: 50%;
   }
-  .header-logo {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    opacity: 0.85;
-    margin-bottom: 10px;
-  }
-  .header h1 {
-    font-size: clamp(20px, 4vw, 28px);
-    font-weight: 800;
-    margin-bottom: 6px;
-  }
-  .header .subtitle {
-    font-size: 13px;
-    opacity: 0.8;
-    margin-bottom: 16px;
-  }
-  .header-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-  }
+  .header-brand { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; margin-bottom: 8px; }
+  .header-name { font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+  .header-simulado { font-size: 15px; font-weight: 500; opacity: 0.9; margin-bottom: 18px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; }
   .badge {
-    background: rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.2);
     border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 20px;
-    padding: 4px 14px;
+    color: white;
     font-size: 12px;
     font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
   }
+
   /* TABS */
-  .tabs-wrapper {
-    background: var(--white);
-    border-bottom: 2px solid var(--bg);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 10px rgba(0,99,127,0.08);
-    overflow-x: auto;
-  }
-  .tabs {
-    display: flex;
-    min-width: max-content;
-    padding: 0 16px;
-  }
+  .tabs-container { background: white; border-radius: 14px; padding: 6px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,99,127,0.1); display: flex; flex-wrap: wrap; gap: 4px; }
   .tab-btn {
-    padding: 14px 18px;
+    flex: 1; min-width: 100px;
+    padding: 10px 14px;
     border: none;
     background: transparent;
-    cursor: pointer;
+    color: var(--gray-500);
+    font-family: 'Inter', sans-serif;
     font-size: 13px;
     font-weight: 600;
-    color: var(--gray);
-    border-bottom: 3px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
-    letter-spacing: 0.3px;
+    text-align: center;
   }
-  .tab-btn:hover { color: var(--secondary); }
-  .tab-btn.active {
-    color: var(--primary);
-    border-bottom-color: var(--primary);
-  }
-  /* CONTENT */
-  .content {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 24px 16px 48px;
-  }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
+  .tab-btn:hover { background: var(--bg); color: var(--primary); }
+  .tab-btn.active { background: linear-gradient(135deg, #00637f, #0c91b7); color: white; box-shadow: 0 4px 12px rgba(0,99,127,0.3); }
+
   /* CARDS */
-  .card {
-    background: var(--white);
-    border-radius: var(--radius);
-    padding: 20px;
-    box-shadow: var(--shadow);
-    margin-bottom: 16px;
+  .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,99,127,0.08); }
+  .card-title { font-size: 13px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+  .card-value { font-size: 32px; font-weight: 800; color: var(--primary); line-height: 1; }
+  .card-sub { font-size: 12px; color: var(--gray-500); margin-top: 4px; }
+
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+
+  @media (max-width: 768px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+    .header-name { font-size: 22px; }
+    .tab-btn { font-size: 12px; padding: 8px 10px; min-width: 80px; }
   }
-  .card-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--primary);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  @media (max-width: 480px) {
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
   }
-  .card-title .icon { font-size: 18px; }
-  /* STAT GRID */
-  .stat-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 14px;
-    margin-bottom: 16px;
-  }
-  .stat-card {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    border-radius: var(--radius);
-    padding: 18px 14px;
-    text-align: center;
-    color: var(--white);
-  }
-  .stat-card.success { background: linear-gradient(135deg, #1e7e5a, var(--success)); }
-  .stat-card.warning { background: linear-gradient(135deg, #c07820, var(--warning)); }
-  .stat-card.danger  { background: linear-gradient(135deg, #922b21, var(--danger)); }
-  .stat-card.neutral { background: linear-gradient(135deg, #3a6370, var(--gray)); }
-  .stat-value {
-    font-size: 28px;
-    font-weight: 800;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .stat-label {
-    font-size: 11px;
-    opacity: 0.88;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  /* VERDICT */
-  .verdict-card {
-    border-radius: var(--radius);
-    padding: 20px;
-    text-align: center;
-    margin-bottom: 16px;
-  }
-  .verdict-card.approved {
-    background: linear-gradient(135deg, #d4edda, #c3e6cb);
-    border: 2px solid #28a745;
-  }
-  .verdict-card.reproved {
-    background: linear-gradient(135deg, #fde8e8, #fad2d2);
-    border: 2px solid var(--danger);
-  }
-  .verdict-emoji { font-size: 40px; margin-bottom: 8px; }
-  .verdict-title { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
-  .verdict-text { font-size: 13px; color: var(--gray); }
+
+  /* BANNER */
+  .banner { border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; display: flex; align-items: center; gap: 16px; }
+  .banner.aprovado { background: linear-gradient(135deg, #dcfce7, #bbf7d0); border: 2px solid #86efac; }
+  .banner.reprovado { background: linear-gradient(135deg, #fee2e2, #fecaca); border: 2px solid #fca5a5; }
+  .banner-icon { font-size: 36px; }
+  .banner-title { font-size: 20px; font-weight: 800; }
+  .banner.aprovado .banner-title { color: #15803d; }
+  .banner.reprovado .banner-title { color: #b91c1c; }
+  .banner-sub { font-size: 13px; margin-top: 3px; }
+  .banner.aprovado .banner-sub { color: #166534; }
+  .banner.reprovado .banner-sub { color: #991b1b; }
+
   /* PROGRESS BAR */
-  .progress-wrap { margin-bottom: 12px; }
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    margin-bottom: 5px;
-    font-weight: 600;
-  }
-  .progress-bar {
-    height: 10px;
-    background: var(--light-gray);
-    border-radius: 99px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    border-radius: 99px;
-    transition: width 0.8s ease;
-  }
-  /* TABLE */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th {
-    background: var(--primary);
-    color: var(--white);
-    padding: 10px 12px;
-    text-align: left;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-  td { padding: 9px 12px; border-bottom: 1px solid var(--light-gray); }
-  tr:hover td { background: var(--light-gray); }
-  .correct { color: var(--success); font-weight: 700; }
-  .wrong   { color: var(--danger);  font-weight: 700; }
-  /* TAGS */
-  .tag {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-  .tag-ok   { background: #d4edda; color: #155724; }
-  .tag-fail { background: #fde8e8; color: #721c24; }
-  /* CHART CONTAINERS */
-  .chart-box {
-    background: var(--white);
-    border-radius: var(--radius);
-    padding: 20px;
-    box-shadow: var(--shadow);
-    margin-bottom: 16px;
-  }
-  .chart-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--primary);
-    margin-bottom: 16px;
-    text-align: center;
-  }
-  .chart-container { position: relative; height: 280px; }
+  .progress-section { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,99,127,0.08); margin-bottom: 20px; }
+  .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .progress-label { font-size: 15px; font-weight: 700; color: var(--gray-700); }
+  .progress-value { font-size: 24px; font-weight: 800; color: var(--primary); }
+  .progress-bar-bg { background: var(--gray-100); border-radius: 10px; height: 18px; position: relative; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, #00637f, #0c91b7, #49bfe0); transition: width 1s ease; position: relative; }
+  .cut-marker { position: absolute; top: -4px; height: 26px; width: 2px; background: #334155; border-radius: 2px; }
+  .cut-label { position: absolute; top: 22px; font-size: 10px; font-weight: 700; color: #334155; transform: translateX(-50%); white-space: nowrap; }
+  .cuts-info { display: flex; gap: 20px; margin-top: 28px; flex-wrap: wrap; }
+  .cut-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .cut-dot { width: 10px; height: 10px; border-radius: 50%; background: #334155; flex-shrink: 0; }
+  .cut-text { color: var(--gray-700); font-weight: 500; }
+
   /* REDACAO */
-  .redacao-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-  .crit-card {
-    background: var(--light-gray);
-    border-radius: 10px;
-    padding: 14px;
-    text-align: center;
-    border-left: 4px solid var(--secondary);
-  }
-  .crit-name { font-size: 11px; font-weight: 700; color: var(--gray); text-transform: uppercase; margin-bottom: 6px; }
-  .crit-val  { font-size: 22px; font-weight: 800; color: var(--primary); }
-  .crit-max  { font-size: 11px; color: var(--gray); }
-  /* ACCORDION */
-  .acc-item { margin-bottom: 8px; }
-  .acc-header {
-    background: var(--light-gray);
-    border-radius: 8px;
-    padding: 12px 16px;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--primary);
-    border: 1px solid rgba(0,99,127,0.1);
-    transition: background 0.2s;
-  }
-  .acc-header:hover { background: #b8e8f7; }
-  .acc-arrow { transition: transform 0.3s; font-size: 16px; }
-  .acc-body {
-    display: none;
-    padding: 14px 16px;
-    background: var(--white);
-    border: 1px solid rgba(0,99,127,0.1);
-    border-top: none;
-    border-radius: 0 0 8px 8px;
-    font-size: 13px;
-    line-height: 1.7;
-    color: var(--dark);
-  }
-  .acc-item.open .acc-arrow { transform: rotate(180deg); }
-  .acc-item.open .acc-body  { display: block; }
-  /* INFO ROWS */
-  .info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--light-gray);
-    font-size: 13px;
-  }
-  .info-row:last-child { border-bottom: none; }
-  .info-label { color: var(--gray); font-weight: 600; }
-  .info-val   { font-weight: 700; color: var(--dark); }
-  /* AVISO */
-  .aviso {
-    border-radius: var(--radius);
-    padding: 16px 18px;
-    margin-bottom: 12px;
-    border-left: 5px solid;
-    font-size: 13px;
-    line-height: 1.6;
-  }
-  .aviso-info    { background: #e8f4f9; border-color: var(--secondary); }
-  .aviso-warning { background: #fef9e7; border-color: var(--warning); }
-  .aviso-success { background: #eafaf1; border-color: var(--success); }
-  .aviso-danger  { background: #fde8e8; border-color: var(--danger); }
-  .aviso-title   { font-weight: 800; margin-bottom: 4px; font-size: 14px; }
-  /* JORNADA */
-  .journey-item {
-    display: flex;
-    gap: 14px;
-    margin-bottom: 4px;
-    position: relative;
-  }
-  .journey-left {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 36px;
-  }
-  .journey-dot {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
-    font-weight: 700;
-  }
-  .journey-line {
-    flex: 1;
-    width: 2px;
-    background: var(--light-gray);
-    margin: 4px 0;
-    min-height: 20px;
-  }
-  .journey-content {
-    padding-bottom: 20px;
-    flex: 1;
-  }
-  .journey-title { font-weight: 700; font-size: 14px; margin-bottom: 3px; }
-  .journey-desc  { font-size: 12px; color: var(--gray); line-height: 1.5; }
-  /* REC ITEMS */
-  .rec-item {
-    background: var(--light-gray);
-    border-radius: 10px;
-    padding: 14px 16px;
-    margin-bottom: 10px;
-    border-left: 4px solid var(--secondary);
-  }
-  .rec-materia { font-size: 11px; font-weight: 700; color: var(--secondary); text-transform: uppercase; margin-bottom: 4px; }
-  .rec-title   { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
-  .rec-body    { font-size: 13px; color: var(--gray); line-height: 1.5; }
-  /* CALC TABLE */
-  .calc-table { width: 100%; font-size: 13px; }
-  .calc-table th { background: var(--primary); color: #fff; padding: 10px 12px; }
-  .calc-table td { padding: 9px 12px; border-bottom: 1px solid var(--light-gray); }
-  .calc-table tr:last-child td { font-weight: 800; background: var(--light-gray); }
-  /* NOTA FINAL DESTAQUE */
-  .nota-destaque {
-    text-align: center;
-    padding: 24px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    border-radius: var(--radius);
-    color: #fff;
-    margin-bottom: 16px;
-  }
-  .nota-destaque .big { font-size: 56px; font-weight: 900; line-height: 1; }
-  .nota-destaque .lbl { font-size: 13px; opacity: 0.85; margin-top: 4px; }
-  /* FOOTER */
-  .footer {
-    text-align: center;
-    padding: 20px;
-    font-size: 12px;
-    color: var(--gray);
-    background: var(--white);
-    margin-top: 24px;
-  }
-  /* RESPONSIVE */
-  @media (max-width: 600px) {
-    .stat-grid { grid-template-columns: 1fr 1fr; }
-    .tab-btn { padding: 12px 12px; font-size: 12px; }
-    .chart-container { height: 220px; }
-  }
+  .redacao-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 600px) { .redacao-grid { grid-template-columns: repeat(2, 1fr); } }
+  .redacao-card { background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 12px rgba(0,99,127,0.08); border-left: 4px solid var(--tertiary); }
+  .redacao-card-title { font-size: 11px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; }
+  .redacao-card-value { font-size: 26px; font-weight: 800; color: var(--primary); }
+  .redacao-total { background: linear-gradient(135deg, #00637f, #0c91b7); color: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 16px rgba(0,99,127,0.25); display: flex; justify-content: space-between; align-items: center; }
+  .redacao-total-label { font-size: 15px; font-weight: 700; opacity: 0.9; }
+  .redacao-total-value { font-size: 36px; font-weight: 800; }
+
+  /* TABLE */
+  .table-wrapper { overflow-x: auto; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,99,127,0.08); }
+  table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; }
+  thead tr { background: linear-gradient(135deg, #00637f, #0c91b7); }
+  thead th { color: white; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; padding: 14px 16px; text-align: left; white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid var(--gray-100); transition: background 0.15s; }
+  tbody tr:hover { background: #f0faff; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody td { padding: 13px 16px; font-size: 14px; color: var(--gray-700); }
+  .td-materia { font-weight: 600; color: var(--primary); }
+  .pct-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+  .pct-high { background: #dcfce7; color: #15803d; }
+  .pct-mid { background: #fef9c3; color: #854d0e; }
+  .pct-low { background: #fee2e2; color: #b91c1c; }
+
+  /* CHARTS */
+  .chart-container { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 12px rgba(0,99,127,0.08); }
+  .chart-title { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 20px; }
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  @media (max-width: 700px) { .charts-row { grid-template-columns: 1fr; } }
+
+  /* CALC */
+  .calc-step { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,99,127,0.08); margin-bottom: 14px; border-left: 5px solid var(--tertiary); }
+  .calc-step-num { font-size: 11px; font-weight: 800; color: var(--secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .calc-step-title { font-size: 15px; font-weight: 700; color: var(--gray-700); margin-bottom: 8px; }
+  .calc-formula { background: var(--gray-50); border-radius: 8px; padding: 12px 16px; font-family: 'Courier New', monospace; font-size: 14px; color: var(--primary); font-weight: 600; margin-top: 8px; border: 1px solid var(--gray-200); }
+  .calc-result { background: linear-gradient(135deg, #00637f, #0c91b7); color: white; border-radius: 12px; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 16px rgba(0,99,127,0.25); }
+
+  /* RECOMENDACOES */
+  .rec-item { background: white; border-radius: 12px; padding: 18px 20px; box-shadow: 0 2px 12px rgba(0,99,127,0.08); margin-bottom: 12px; display: flex; gap: 16px; align-items: flex-start; }
+  .rec-priority { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex-shrink: 0; }
+  .rec-p1 { background: #fee2e2; color: #b91c1c; }
+  .rec-p2 { background: #fef9c3; color: #854d0e; }
+  .rec-p3 { background: #dcfce7; color: #15803d; }
+  .rec-content-title { font-size: 15px; font-weight: 700; color: var(--gray-700); margin-bottom: 4px; }
+  .rec-content-text { font-size: 13px; color: var(--gray-500); line-height: 1.5; }
+
+  /* AVISOS */
+  .aviso-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,99,127,0.08); margin-bottom: 14px; }
+  .aviso-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .aviso-icon { font-size: 24px; }
+  .aviso-title { font-size: 15px; font-weight: 700; color: var(--primary); }
+  .aviso-text { font-size: 13px; color: var(--gray-700); line-height: 1.6; }
+  .aviso-text ul { padding-left: 18px; margin-top: 8px; }
+  .aviso-text li { margin-bottom: 4px; }
+  .info-chip { display: inline-block; background: var(--bg); color: var(--primary); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin: 3px; }
+
+  .section-title { font-size: 18px; font-weight: 800; color: var(--primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+  .footer { text-align: center; margin-top: 32px; color: var(--gray-500); font-size: 12px; }
+  .footer span { color: var(--primary); font-weight: 700; }
 </style>
 </head>
 <body>
+<div id="root"></div>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="header-logo">⚖️ Aprendly — Relatório de Desempenho</div>
-  <h1>Lucinele Siebra</h1>
-  <div class="subtitle">Simulado 1 · TJAL 2024 · Gerado automaticamente</div>
-  <div class="header-badges">
-    <span class="badge">🏛️ Tribunal de Justiça</span>
-    <span class="badge">📋 Técnico Judiciário</span>
-    <span class="badge">⚖️ Analista Judiciário – AL</span>
-    <span class="badge">📄 Novo Edital</span>
-    <span class="badge">🥇 1º Simulado</span>
-  </div>
-</div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
 
-<!-- TABS -->
-<div class="tabs-wrapper">
-  <div class="tabs">
-    <button class="tab-btn active" onclick="showTab('resumo',this)">📊 Resumo</button>
-    <button class="tab-btn" onclick="showTab('jornada',this)">🗺️ Jornada</button>
-    <button class="tab-btn" onclick="showTab('materias',this)">📚 Por Matéria</button>
-    <button class="tab-btn" onclick="showTab('graficos',this)">📈 Gráficos</button>
-    <button class="tab-btn" onclick="showTab('calculo',this)">🧮 Cálculo</button>
-    <button class="tab-btn" onclick="showTab('recomendacoes',this)">💡 Recomendações</button>
-    <button class="tab-btn" onclick="showTab('avisos',this)">⚠️ Avisos</button>
-  </div>
-</div>
+const DATA = {
+  cliente: "Lucinele Siebra",
+  concurso: "Tribunal de Justiça (TJ)",
+  cargo: "Técnico Judiciário",
+  area: "Analista Judiciário",
+  edital: "Novo Edital",
+  simulado: "Simulado 1 - TJAL 2024",
+  primeiroSimulado: "Sim",
+  notaCorteGeral: 6,
+  notaCorteCotas: 4.8,
+  resultados: {
+    totalQuestoes: 60,
+    totalAcertos: 49,
+    totalErros: 11,
+    aproveitamento: 81.67,
+    notaObjetiva: 8.17,
+    aprovado: true,
+    materias: {
+      "Língua Portuguesa": { acertos: 16, erros: 4, total: 20 },
+      "Legislação Específica - AL": { acertos: 7, erros: 3, total: 10 },
+      "Noções de Direito Administrativo": { acertos: 5, erros: 0, total: 5 },
+      "Noções de Direito Constitucional": { acertos: 5, erros: 0, total: 5 },
+      "Noções de Direito Civil": { acertos: 5, erros: 0, total: 5 },
+      "Noções de Direito Processual Civil": { acertos: 4, erros: 1, total: 5 },
+      "Noções de Direito Penal": { acertos: 4, erros: 1, total: 5 },
+      "Noções de Direito Processual Penal": { acertos: 3, erros: 2, total: 5 }
+    },
+    redacao: {
+      "RECORTE TEMÁTICO": 2,
+      "INTERPRETAÇÃO CRÍTICA": 1,
+      "PROGRESSÃO": 2,
+      "PROPRIEDADE VOCABULAR": 0.6,
+      "COESÃO TEXTUAL": 1,
+      "MORFOSSINTAXE": 0.3
+    },
+    totalRedacao: 6.9
+  }
+};
 
-<div class="content">
+const TABS = [
+  { id: 'resumo', label: '📊 Resumo' },
+  { id: 'jornada', label: '🗓 Jornada' },
+  { id: 'materias', label: '📚 Por Matéria' },
+  { id: 'graficos', label: '📈 Gráficos' },
+  { id: 'calculo', label: '🧮 Cálculo' },
+  { id: 'recomendacoes', label: '🎯 Recomendações' },
+  { id: 'avisos', label: '⚠️ Avisos' },
+];
 
-  <!-- ===================== RESUMO ===================== -->
-  <div id="tab-resumo" class="tab-panel active">
+function getPctClass(pct) {
+  if (pct >= 70) return 'pct-high';
+  if (pct >= 50) return 'pct-mid';
+  return 'pct-low';
+}
 
-    <div class="verdict-card approved">
-      <div class="verdict-emoji">🎉</div>
-      <div class="verdict-title" style="color:#155724">APROVADA NA NOTA OBJETIVA!</div>
-      <div class="verdict-text">Sua nota objetiva <strong>supera</strong> o corte geral de 6,00 pontos. Excelente desempenho no 1º simulado!</div>
-    </div>
+function DonutChart() {
+  const ref = useRef(null);
+  const chartRef = useRef(null);
+  useEffect(() => {
+    if (chartRef.current) chartRef.current.destroy();
+    const ctx = ref.current.getContext('2d');
+    chartRef.current = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Acertos', 'Erros'],
+        datasets: [{
+          data: [DATA.resultados.totalAcertos, DATA.resultados.totalErros],
+          backgroundColor: ['#00637f', '#fca5a5'],
+          borderWidth: 0,
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        cutout: '68%',
+        plugins: {
+          legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 13, weight: '600' }, padding: 16 } },
+          tooltip: { callbacks: { label: (c) => ` ${c.label}: ${c.raw} questões` } }
+        }
+      }
+    });
+    return () => { if (chartRef.current) chartRef.current.destroy(); };
+  }, []);
+  return <canvas ref={ref} />;
+}
 
-    <div class="stat-grid">
-      <div class="stat-card">
-        <div class="stat-value">60</div>
-        <div class="stat-label">Questões totais</div>
-      </div>
-      <div class="stat-card success">
-        <div class="stat-value" id="acertos-total">—</div>
-        <div class="stat-label">Acertos</div>
-      </div>
-      <div class="stat-card danger">
-        <div class="stat-value" id="erros-total">—</div>
-        <div class="stat-label">Erros</div>
-      </div>
-      <div class="stat-card warning">
-        <div class="stat-value" id="pct-total">—</div>
-        <div class="stat-label">Aproveitamento</div>
-      </div>
-    </div>
+function BarChart() {
+  const ref = useRef(null);
+  const chartRef = useRef(null);
+  useEffect(() => {
+    if (chartRef.current) chartRef.current.destroy();
+    const materias = DATA.resultados.materias;
+    const labels = Object.keys(materias).map(m => m.length > 22 ? m.substring(0, 22) + '…' : m);
+    const fullLabels = Object.keys(materias);
+    const values = Object.values(materias).map(m => parseFloat(((m.acertos / m.total) * 100).toFixed(1)));
+    const colors = values.map(v => v >= 70 ? '#00637f' : v >= 50 ? '#d97706' : '#dc2626');
+    const ctx = ref.current.getContext('2d');
+    chartRef.current = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Aproveitamento (%)',
+          data: values,
+          backgroundColor: colors,
+          borderRadius: 6,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: (items) => fullLabels[items[0].dataIndex],
+              label: (c) => ` ${c.raw}%`
+            }
+          }
+        },
+        scales: {
+          x: {
+            min: 0, max: 100,
+            grid: { color: '#e2e8f0' },
+            ticks: { callback: v => v + '%', font: { family: 'Inter', size: 11 } }
+          },
+          y: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11, weight: '600' } } }
+        }
+      }
+    });
+    return () => { if (chartRef.current) chartRef.current.destroy(); };
+  }, []);
+  return <canvas ref={ref} />;
+}
 
-    <div class="nota-destaque">
-      <div class="lbl">NOTA OBJETIVA (escala 0–10)</div>
-      <div class="big" id="nota-obj">—</div>
-      <div class="lbl">Corte geral: 6,00 · Cotas: 4,80</div>
-    </div>
+function TabResumo() {
+  const r = DATA.resultados;
+  const pct = r.notaObjetiva / 10 * 100;
+  const corteGeralPct = DATA.notaCorteGeral / 10 * 100;
+  const corteCotasPct = DATA.notaCorteCotas / 10 * 100;
 
-    <div class="card">
-      <div class="card-title"><span class="icon">📝</span> Redação – Nota Final</div>
-      <div class="redacao-grid">
-        <div class="crit-card">
-          <div class="crit-name">Recorte Temático</div>
-          <div class="crit-val">2,0</div>
-          <div class="crit-max">peso máx.: 2,0</div>
-        </div>
-        <div class="crit-card">
-          <div class="crit-name">Interpretação Crítica</div>
-          <div class="crit-val">1,0</div>
-          <div class="crit-max">peso máx.: —</div>
-        </div>
-        <div class="crit-card">
-          <div class="crit-name">Progressão</div>
-          <div class="crit-val">2,0</div>
-          <div class="crit-max">peso máx.: —</div>
-        </div>
-        <div class="crit-card">
-          <div class="crit-name">Propriedade Vocabular</div>
-          <div class="crit-val">0,6</div>
-          <div class="crit-max">ponto de atenção</div>
-        </div>
-        <div class="crit-card">
-          <div class="crit-name">Coesão Textual</div>
-          <div class="crit-val">1,0</div>
-          <div class="crit-max">peso máx.: —</div>
-        </div>
-        <div class="crit-card" style="border-color:var(--danger)">
-          <div class="crit-name">Morfossintaxe</div>
-          <div class="crit-val" style="color:var(--danger)">0,3</div>
-          <div class="crit-max">⚠️ critério crítico</div>
-        </div>
-      </div>
-      <div style="text-align:center; padding:16px; background:linear-gradient(135deg,#e8f4f9,#d0edf8); border-radius:10px;">
-        <div style="font-size:13px;color:var(--gray);font-weight:700;margin-bottom:4px;">TOTAL DA REDAÇÃO</div>
-        <div style="font-size:40px;font-weight:900;color:var(--primary)">6,9 <span style="font-size:18px;color:var(--gray)">/ 10</span></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><span class="icon">🏆</span> Aproveitamento por Matéria</div>
-      <div id="progress-materias"></div>
-    </div>
-
-  </div>
-
-  <!-- ===================== JORNADA ===================== -->
-  <div id="tab-jornada" class="tab-panel">
-    <div class="card">
-      <div class="card-title"><span class="icon">🗺️</span> Sua Jornada no Simulado 1</div>
-
-      <div class="journey-item">
-        <div class="journey-left">
-          <div class="journey-dot" style="background:#e8f4f9;color:var(--primary)">🎯</div>
-          <div class="journey-line"></div>
-        </div>
-        <div class="journey-content">
-          <div class="journey-title">Início do Simulado – TJAL 2024</div>
-          <div class="journey-desc">Lucinele ingressou no seu primeiro simulado para o cargo de Técnico Judiciário / Analista Judiciário – TJ de Alagoas, enfrentando 60 questões objetivas e uma redação avaliada por 6 critérios distintos.</div>
-        </div>
-      </div>
-
-      <div class="journey-item">
-        <div class="journey-left">
-          <div class="journey-dot" style="background:#d4edda;color:#155724">📖</div>
-          <div class="journey-line"></div>
-        </div>
-        <div class="journey-content">
-          <div class="journey-title">Bloco 1 – Língua Portuguesa (Q1–Q20)</div>
-          <div class="journey-desc">Das 20 questões de LP, Lucinele acertou <strong>16</strong> e errou <strong>4</strong> (Q4, Q15, Q16, Q17), atingindo <strong>80% de aproveitamento</strong>. Ponto forte da prova objetiva!</div>
-        </div>
-      </div>
-
-      <div class="journey-item">
-        <div class="journey-left">
-          <div class="journey-dot" style="background:#fef9e7;color:#856404">⚖️</div>
-          <div class="journey-line"></div>
-        </div>
-        <div class="journey-content">
-          <div class="journey-title">Bloco 2 – Legislação Específica – AL (Q21–Q30)</div>
-          <div class="journey-desc">Das 10 questões, Lucinele acertou <strong>7</strong> e errou <strong>3</strong> (Q23, Q25, Q28), com <strong>70% de aproveitamento</strong>. Desempenho sólido, com espaço para aprimorar legislação específica do TJ-AL.</div>
-        </div>
-      </div>
-
-      <div class="journey-item">
-        <div class="journey-left">
-          <div class="journey-dot" style="background:#d4edda;color:#155724">📜</div>
-          <div class="journey-line"></div>
-        </div>
-        <div class="journey-content">
-          <div class="journey-title">Bloco 3 – Direito Administrativo (Q31–Q35)</div>
-          <div class="journey-desc">Resultado <strong>perfeito: 5/5 (100%)</strong>. Demonstra domínio completo do conteúdo de Adm. neste simulado.</div>
-        </div>
-      </div>
-
-      <div class="journey-item">
-        <div class="journey-left">
-          <div class="journey-dot" style="background:#d4edda;color:#155724">🏛️</div>
-          <div class="journey-line"></div>
-        </div>
-        <div class="journey-content">
-          <div class="journey-title">Bloco 4 – Direito Constitucional (Q36–Q40)</div>
-          <div class="journey-desc">Mais um resultado <strong>perfeito: 5/5 (100%)</strong>. Domínio robusto da Constituição Federal aplicado ao contexto do TJAL.</div>
+  return (
+    <div>
+      <div className={`banner ${r.aprovado ? 'aprovado' : 'reprovado'}`}>
+        <div className="banner-icon">{r.aprovado ? '✅' : '❌'}</div>
+        <div>
+          <div className="banner-title">{r.aprovado ? 'Aprovada na Nota Objetiva!' : 'Reprovada na Nota Objetiva'}</div>
+          <div className="banner-sub">
+            {r.aprovado
+              ? `Sua nota ${r.notaObjetiva.toFixed(2)} supera o corte geral de ${DATA.notaCorteGeral.toFixed(2)}. Excelente desempenho!`
+              : `Sua nota ${r.notaObjetiva.toFixed(2)} está abaixo do corte geral de ${DATA.notaCorteGeral.toFixed(2)}.`}
+          </div>
         </div>
       </div>
 
-      <div class="journey-item">
-        <div class="journey-left">
-          <div class="journey-dot" style="background:#d4edda;color:#155724">⚖️</div>
-          <div class="journey-line"></div>
+      <div className="grid-4">
+        <div className="card">
+          <div className="card-title">Total de Questões</div>
+          <div className="card-value">{r.totalQuestoes}</div>
+          <div className="card-sub">neste simulado</div>
         </div>
-        <div class="journey-content">
-          <div class="journey-title">Bloco 5 – Direito Civil (Q41–Q45)</div>
-          <div class="journey-desc"><strong>5/5 (100%)</strong> de acertos. Desempenho excelente e consistente em Direito Civil.</div>
+        <div className="card">
+          <div className="card-title">Acertos</div>
+          <div className="card-value" style={{color:'#15803d'}}>{r.totalAcertos}</div>
+          <div className="card-sub">questões corretas</div>
         </div>
-      </div>
-
-      <div class="journey-item">
-        <div class="journey-left">
-          <div class="journey-dot" style="background:#fef9e7;color:#856404">📋</div>
-          <div class="journey-line"></div>
+        <div className="card">
+          <div className="card-title">Erros</div>
+          <div className="card-value" style={{color:'#dc2626'}}>{r.totalErros}</div>
+          <div className="card-sub">questões incorretas</div>
         </div>
-        <div class="journey-content">
-          <div class="journey-title">Bloco 6 – Direito Processual Civil (Q46–Q50)</div>
-          <div class="journey-desc">Acertou <strong>4/5 (80%)</strong>. Erro na Q48 indica atenção necessária em procedimentos específicos do CPC.</div>
-        </div>
-      </div>
-
-      <div class="journey-item">
-        <div class="journey-left">
-          <div class="journey-dot" style="background:#fef9e7;color:#856404">🔒</div>
-          <div class="journey-line"></div>
-        </div>
-        <div class="journey-content">
-          <div class="journey-title">Bloco 7 – Direito Penal (Q51–Q55)</div>
-          <div class="journey-desc">Acertou <strong>4/5 (80%)</strong>. Erro na Q53 requer revisão de tipos penais específicos.</div>
+        <div className="card">
+          <div className="card-title">Aproveitamento</div>
+          <div className="card-value" style={{color:'#0c91b7'}}>{r.aproveitamento.toFixed(2)}%</div>
+          <div className="card-sub">de acerto geral</div>
         </div>
       </div>
 
-      <div class="journey-item">
-        <div class="journey-left">
-          <div class="journey-dot" style="background:#fde8e8;color:#721c24">⚠️</div>
-          <div class="journey-line"></div>
+      <div className="progress-section">
+        <div className="progress-header">
+          <div className="progress-label">Nota Objetiva</div>
+          <div className="progress-value">{r.notaObjetiva.toFixed(2)}</div>
         </div>
-        <div class="journey-content">
-          <div class="journey-title">Bloco 8 – Direito Processual Penal (Q56–Q60)</div>
-          <div class="journey-desc">Acertou <strong>3/5 (60%)</strong>. Erros nas Q57 e Q59. Menor aproveitamento do simulado — foco de estudo prioritário!</div>
+        <div className="progress-bar-bg">
+          <div className="progress-bar-fill" style={{width: `${pct}%`}} />
+          <div className="cut-marker" style={{left: `${corteGeralPct}%`}}>
+            <div className="cut-label">{DATA.notaCorteGeral.toFixed(2)} Geral</div>
+          </div>
+          <div className="cut-marker" style={{left: `${corteCotasPct}%`, background:'#0c91b7'}}>
+            <div className="cut-label" style={{color:'#0c91b7'}}>{DATA.notaCorteCotas.toFixed(2)} Cotas</div>
+          </div>
+        </div>
+        <div className="cuts-info">
+          <div className="cut-item"><div className="cut-dot" /><span className="cut-text">Corte Geral: <strong>{DATA.notaCorteGeral.toFixed(2)}</strong></span></div>
+          <div className="cut-item"><div className="cut-dot" style={{background:'#0c91b7'}} /><span className="cut-text">Corte Cotas: <strong>{DATA.notaCorteCotas.toFixed(2)}</strong></span></div>
+          <div className="cut-item"><div className="cut-dot" style={{background:'#00637f'}} /><span className="cut-text">Sua Nota: <strong>{r.notaObjetiva.toFixed(2)}</strong></span></div>
         </div>
       </div>
 
-      <div class="journey-item">
-        <div class="journey-left">
-          <div class="journey-dot" style="background:#d4edda;color:#155724">✅</div>
-        </div>
-        <div class="journey-content">
-          <div class="journey-title">Resultado Final – Aprovada no corte geral!</div>
-          <div class="journey-desc">Nota objetiva calculada: <strong>8,17/10</strong> · Nota redação: <strong>6,9/10</strong>. Primeiro simulado com desempenho muito acima do corte. Siga nessa trajetória!</div>
-        </div>
+      <div className="section-title">📝 Critérios de Redação</div>
+      <div className="redacao-grid">
+        {Object.entries(r.redacao).map(([criterio, nota]) => (
+          <div className="redacao-card" key={criterio}>
+            <div className="redacao-card-title">{criterio}</div>
+            <div className="redacao-card-value">{nota.toFixed(1)}</div>
+          </div>
+        ))}
+      </div>
+      <div className="redacao-total">
+        <div className="redacao-total-label">📄 Total da Redação</div>
+        <div className="redacao-total-value">{r.totalRedacao.toFixed(1)}</div>
       </div>
     </div>
-  </div
+  );
+}
+
+function TabJornada() {
+  const r = DATA.resultados;
+  return (
+    <div>
+      <div className="section-title">🗓 Sua Jornada nos Simulados</div>
+      <div className="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Simulado</th>
+              <th>Data</th>
+              <th>Acertos</th>
+              <th>Erros</th>
+              <th>Total</th>
+              <th>Aproveitamento</th>
+              <th>Nota Obj.</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1</strong></td>
+              <td className="td-materia">{DATA.simulado}</td>
+              <td>2024</td>
+              <td style={{color:'#15803d', fontWeight:700}}>{r.totalAcertos}</td>
+              <td style={{color:'#dc2626', fontWeight:700}}>{r.totalErros}</td>
+              <td>{r.totalQuestoes}</td>
+              <td>
+                <span className={`pct-badge ${getPctClass(r.aproveitamento)}`}>
+                  {r.aproveitamento.toFixed(2)}%
+                </span>
+              </td>
+              <td><strong>{r.notaObjetiva.toFixed(2)}</strong></td>
+              <td>
+                <span className={`pct-badge ${r.aprovado ? 'pct-high' : 'pct-low'}`}>
+                  {r.aprovado ? '✅ Aprovada' : '❌ Reprovada'}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div className="card" style={{marginTop:16}}>
+        <div style={{fontSize:13, color:'var(--gray-500)', lineHeight:1.6}}>
+          🌟 <strong>Este é o seu primeiro simulado!</strong> Cada simulado realizado ficará registrado aqui, permitindo que você acompanhe sua evolução ao longo do tempo. Continue praticando para ver sua progressão!
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TabMaterias() {
+  const materias = DATA.resultados.materias;
+  return (
+    <div>
+      <div className="section-title">📚 Desempenho por Matéria</div>
+      <div className="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Disciplina</th>
+              <th>Acertos</th>
+              <th>Erros</th>
+              <th>Total</th>
+              <th>Aproveitamento</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(materias).map(([materia, dados]) => {
+              const pct = (dados.acertos / dados.total * 100).toFixed(1);
+              return (
+                <tr key={materia}>
+                  <td className="td-materia">{materia}</td>
+                  <td style={{color:'#15803d', fontWeight:700}}>{dados.acertos}</td>
+                  <td style={{color: dados.erros > 0 ? '#dc2626' : '#15803d', fontWeight:700}}>{dados.erros}</td>
+                  <td>{dados.total}</td>
+                  <td>
+                    <span className={`pct-badge ${getPctClass(parseFloat(pct))}`}>{pct}%</span>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div style={{display:'flex', gap:12, marginTop:16, flexWrap:'wrap'}}>
+        <span className="pct-badge pct-high" style={{padding:'6px 14px'}}>≥ 70% — Ótimo</span>
+        <span className="pct-badge pct-mid" style={{padding:'6px 14px'}}>50–69% — Atenção</span>
+        <span className="pct-badge pct-low" style={{padding:'6px 14px'}}>&lt; 50% — Crítico</span>
+      </div>
+    </div>
+  );
+}
+
+function TabGraficos() {
+  return (
+    <div>
+      <div className="charts-row">
+        <div className="chart-container">
+          <div className="chart-title">🍩 Acertos vs Erros</div>
+          <DonutChart />
+        </div>
+        <div className="chart-container" style={{gridColumn:'1 / -1'}}>
+          <div className="chart-title">📊 Aproveitamento por Matéria</div>
+          <BarChart />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TabCalculo() {
+  const r = DATA.resultados;
+  return (
+    <div>
+      <div className="section-title">🧮 Cálculo da Nota Objetiva (Regra FCC)</div>
+
+      <div className="calc-step">
+        <div className="calc-step-num">Passo 1</div>
+        <div className="calc-step-title">Total de Questões e Acertos</div>
+        <div style={{fontSize:14, color:'var(--gray-700)', lineHeight:1.6}}>
+          O simulado possui <strong>{r.totalQuestoes} questões</strong> no total. Lucinele acertou <strong>{r.totalAcertos} questões</strong> e errou <strong>{r.totalErros} questões</strong>.
+        </div>
+        <div className="calc-formula">
+          Acertos: {r.totalAcertos} | Erros: {r.totalErros} | Total: {r.totalQuestoes}
+        </div>
+      </div>
+
+      <div className="calc-step">
+        <div className="calc-step-num">Passo 2</div>
+        <div className="calc-step-title">Cálculo do Aproveitamento Percentual</div>
+        <div style={{fontSize:14, color:'var(--gray-700)', lineHeight:1.6}}>
+          Divide-se o número de acertos pelo total de questões e multiplica-se por 100.
+        </div>
+        <div className="calc-formula">
+          ({r.totalAcertos} ÷ {r.totalQuestoes}) × 100 = {r.aproveitamento.toFixed(4)}%
+        </div>
+      </div>
+
+      <div className="calc-step">
+        <div className="calc-step-num">Passo 3</div>
+        <div className="calc-step-title">Conversão para Escala de 0 a 10</div>
+        <div style={{fontSize:14, color:'var(--gray-700)', lineHeight:1.6}}>
+          O aproveitamento percentual é dividido por 10 para obter a nota na escala de 0 a 10.
+        </div>
+        <div className="calc-formula">
+          {r.aproveitamento.toFixed(4)}% ÷ 10 = {(r.aproveitamento / 10).toFixed(4)}
+        </div>
+      </div>
+
+      <div className="calc-step">
+        <div className="calc-step-num">Passo 4</div>
+        <div className="calc-step-title">Arredondamento FCC (2 casas decimais)</div>
+        <div style={{fontSize:14, color:'var(--gray-700)', lineHeight:1.6}}>
+          A FCC utiliza arredondamento matemático padrão para 2 casas decimais. O valor bruto <strong>{(r.aproveitamento / 10).toFixed(4)}</strong> é arredondado para <strong>{r.notaObjetiva.toFixed(2)}</strong>.
+        </div>
+        <div className="calc-formula">
+          {(r.aproveitamento / 10).toFixed(4)} → arredondado → {r.notaObjetiva.toFixed(2)}
+        </div>
+      </div>
+
+      <div className="calc-step">
+        <div className="calc-step-num">Passo 5</div>
+        <div className="calc-step-title">Verificação da Nota de Corte</div>
+        <div style={{fontSize:14, color:'var(--gray-700)', lineHeight:1.6}}>
+          Compara-se a nota obtida com os cortes mínimos estabelecidos no edital.
+        </div>
+        <div className="calc-formula">
+          Nota Obtida: {r.notaObjetiva.toFixed(2)} | Corte Geral: {DATA.notaCorteGeral.toFixed(2)} | Corte Cotas: {DATA.notaCorteCotas.toFixed(2)}{"\n"}
+          {r.notaObjetiva.toFixed(2)} {'>'} {DATA.notaCorteGeral.toFixed(2)} → ✅ APROVADA no corte geral
+        </div>
+      </div>
+
+      <div className="calc-result">
+        <div>
+          <div style={{fontSize:13, fontWeight:700, opacity:0.85, marginBottom:4}}>NOTA OBJETIVA FINAL</div>
+          <div style={{fontSize:12, opacity:0.7}}>Simulado 1 - TJAL 2024 · {r.totalAcertos}/{r.totalQuestoes} questões</div>
+        </div>
+        <div style={{fontSize:42, fontWeight:800}}>{r.notaObjetiva.toFixed(2)}</div>
+      </div>
+    </div>
+  );
+}
+
+function TabRecomendacoes() {
+  const materias = DATA.resultados.materias;
+  const sorted = Object.entries(materias).sort((a,b) => {
+    const pctA = a[1].acertos / a[1].total;
+    const pctB = b[1].acertos / b[1].total;
+    return pctA - pctB;
+  });
+
+  const recsData = [
+    {
+      materia: "Noções de Direito Processual Penal",
+      erros: 2,
+      total: 5,
+      pct: 60,
+      dica: "Foque em temas como competência, prisão em flagrante, inquérito policial e recursos. Revise os arts. 1º a 24 do CPP com atenção especial.",
+      priority: 1,
+      label: "Atenção Alta"
+    },
+    {
+      materia: "Legislação Específica - AL",
+      erros: 3,
+      total: 10,
+      pct: 70,
+      dica: "Estude a Lei de Organização Judiciária de Alagoas, o Regimento Interno e a Lei Orgânica da Magistratura. Questões de legislação específica são altamente previsíveis.",
+      priority: 1,
+      label: "Atenção Alta"
+    },
+    {
+      materia: "Língua Portuguesa",
+      erros: 4,
+      total: 20,
+      pct: 80,
+      dica: "Com 20 questões, é a matéria com maior peso. Revise interpretação textual, concordância verbal e nominal, crase e pontuação. Pratique com textos do tipo dissertativo.",
+      priority: 2,
+      label: "Manutenção"
+    },
+    {
+      materia: "Noções de Direito Processual Civil",
+      erros: 1,
+      total: 5,
+      pct: 80,
+      dica: "Resultado sólido! Revise os temas de competência e recursos para eliminar os erros pontuais. Uma questão pode fazer diferença no ranking.",
+      priority: 2,
+      label: "Manutenção"
+    },
+    {
+      materia: "Noções de Direito Penal",
+      erros: 1,
+      total: 5,
+      pct: 80,
+      dica: "Bom desempenho! Identifique qual tema gerou o erro e dedique uma revisão rápida. Foco em tipicidade, ilicitude e culpabilidade.",
+      priority: 2,
+      label: "Manutenção"
+    },
+    {
+      materia: "Direito Administrativo, Constitucional e Civil",
+      erros: 0,
+      total: 15,
+      pct: 100,
+      dica: "Desempenho perfeito nessas três matérias! Mantenha a revisão periódica para não perder o que já conquistou. Continue assim!",
+      priority: 3,
+      label: "Excelente"
+    },
+  ];
+
+  const getPClass = (p) => p === 1 ? 'rec-p1' : p === 2 ? 'rec-p2' : 'rec-p3';
+  const getPLabel = (p) => p === 1 ? '⚠️' : p === 2 ? '👀' : '✅';
+
+  return (
+    <div>
+      <div className="section-title">🎯 Recomendações de Estudo</div>
+      <div className="card" style={{marginBottom:20, background:'linear-gradient(135deg,#f0faff,#e0f5ff)', border:'1px solid #bae6fd'}}>
+        <div style={{fontSize:14, color:'var(--gray-700)', lineHeight:1.6}}>
+          📌 <strong>Como usar estas recomendações:</strong> As sugestões estão ordenadas por prioridade — do que precisa de mais atenção ao que está indo bem. Dedique mais tempo às matérias com maior número de erros e peso no edital.
+        </div>
+      </div>
+      {recsData.map((rec, i) => (
+        <div className="rec-item" key={i}>
+          <div className={`rec-priority ${getPClass(rec.priority)}`}>{getPLabel(rec.priority)}</div>
+          <div style={{flex:1}}>
+            <div className="rec-content-title">
+              {rec.materia}
+              <span className={`pct-badge ${getPctClass(rec.pct)}`} style={{marginLeft:10, fontSize:11}}>
+                {rec.erros > 0 ? `${rec.erros} erro${rec.erros > 1 ? 's' : ''}` : '100%'}
+              </span>
+            </div>
+            <div className="rec-content-text">{rec.dica}</div>
+          </div>
+        </div>
+      ))}
+
+      <div className="card" style={{marginTop:8, background:'linear-gradient(135deg,#f0fdf4,#dcfce7)', border:'1px solid #86efac'}}>
+        <div style={{fontSize:14, color:'#166534', lineHeight:1.7}}>
+          🏆 <strong>Parabéns pelo desempenho geral!</strong> Com 81,67% de aproveitamento no primeiro simulado, Lucinele demonstra uma base sólida de conhecimentos. A redação com nota 6,9 também é expressiva. Continue com os simulados para consolidar ainda mais sua preparação!
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TabAvisos() {
+  return (
+    <div>
+      <div className="section-title">⚠️ Informações e Próximos Passos</div>
+
+      <div className="aviso-card">
+        <div className="aviso-header">
+          <div className="aviso-icon">🏛️</div>
+          <div className="aviso-title">Sobre o Concurso</div>
+        </div>
+        <div className="aviso-text">
+          <div style={{display:'flex', flexWrap:'wrap', marginBottom:12}}>
+            <span className="info-chip">📋 {DATA.concurso}</span>
+            <span className="info-chip">💼 {DATA.cargo}</span>
+            <span className="info-chip">🎓 {DATA.area}</span>
+            <span className="info-chip">📄 {DATA.edital}</span>
+          </div>
+          Este simulado foi elaborado com base nas questões do TJAL 2024, seguindo o modelo de provas FCC. As bancas organizam concursos para Tribunais de Justiça com padrão de exigência elevado, especialmente em Língua Portuguesa e Legislação Específica.
+        </div>
+      </div>
+
+      <div className="aviso-card">
+        <div className="aviso-header">
+          <div className="aviso-icon">📌</div>
+          <div className="aviso-title">Nota de Corte — Entenda os Valores</div>
+        </div>
+        <div className="aviso-text">
+          <ul>
+            <li><strong>Corte Geral (6,00):</strong> Nota mínima exigida para todos os candidatos na prova objetiva.</li>
+            <li><strong>Corte Cotas (4,80):</strong> Nota mínima para candidatos cotistas (PCD, negros, etc.), equivalente a 80% do corte geral.</li>
+            <li>Atenção: o corte de nota é independente da classificação. Mesmo aprovada no corte, a candidata precisa estar entre as melhores classificadas para ser convocada.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="aviso-card">
+        <div className="aviso-header">
+          <div className="aviso-icon">📝</div>
+          <div className="aviso-title">Sobre a Redação</div>
+        </div>
+        <div className="aviso-text">
+          <ul>
+            <li>A nota de redação <strong>6,9</strong> é um bom resultado, mas pode ser melhorada.</li>
+            <li>Os critérios com menor pontuação foram <strong>Morfossintaxe (0,3)</strong> e <strong>Propriedade Vocabular (0,6)</strong>.</li>
+            <li>Invista em revisar gramática, regência verbal e nominal, e amplie o repertório vocabular com leitura de textos formais.</li>
+            <li>A nota de redação pode ser somada ou usada como critério de desempate — verifique o edital do concurso que vai prestar.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="aviso-card">
+        <div className="aviso-header">
+          <div className="aviso-icon">🚀</div>
+          <div className="aviso-title">Próximos Passos Recomendados</div>
+        </div>
+        <div className="aviso-text">
+          <ul>
+            <li>✅ Continue realizando os simulados da Aprendly regularmente — a prática constante é o maior diferencial.</li>
+            <li>📖 Priorize revisão das matérias com mais erros: Processual Penal e Legislação Específica.</li>
+            <li>📝 Treine redações com temas jurídicos e sociais para melhorar os critérios de Morfossintaxe e Vocabular.</li>
+            <li>📊 Acompanhe sua evolução pela aba <strong>Jornada</strong> após cada simulado realizado.</li>
+            <li>🎯 Mantenha o foco: com essa base, você está no caminho certo para a aprovação!</li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="aviso-card" style={{background:'linear-gradient(135deg,#fef9c3,#fef08a)', border:'1px solid #fde047'}}>
+        <div className="aviso-header">
+          <div className="aviso-icon">⚡</div>
+          <div className="aviso-title" style={{color:'#854d0e'}}>Aviso Importante</div>
+        </div>
+        <div className="aviso-text" style={{color:'#713f12'}}>
+          Este relatório é gerado com base nos dados do simulado e tem caráter educativo e orientativo. As notas de corte utilizadas são referências baseadas no edital indicado. Sempre consulte o edital oficial do concurso para obter as informações mais atualizadas sobre critérios de aprovação, etapas e cronograma.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [activeTab, setActiveTab] = useState('resumo');
+
+  const renderTab = () => {
+    switch(activeTab) {
+      case 'resumo': return <TabResumo />;
+      case 'jornada': return <TabJornada />;
+      case 'materias': return <TabMaterias />;
+      case 'graficos': return <TabGraficos />;
+      case 'calculo': return <TabCalculo />;
+      case 'recomendacoes': return <TabRecomendacoes />;
+      case 'avisos': return <TabAvisos />;
+      default: return null;
+    }
+  };
+
+  return (
+    <div className="app-wrapper">
+      <div className="header">
+        <div className="header-brand">Aprendly · Relatório de Desempenho</div>
+        <div className="header-name">👩‍💼 {DATA.cliente}</div>
+        <div className="header-simulado">📋 {DATA.simulado}</div>
+        <div className="badges">
+          <span className="badge">🏛️ {DATA.concurso}</span>
+          <span className="badge">💼 {DATA.cargo}</span>
+          <span className="badge">🎓 {DATA.area}</span>
+          <span className="badge">📄 {DATA.edital}</span>
+          <span className="badge">⭐ 1º Simulado</span>
+        </div>
+      </div>
+
+      <div className="tabs-container">
+        {TABS.map(tab => (
+          <button
+            key={tab.id}
+            className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {renderTab()}
+
+      <div className="footer">
+        Gerado por <span>Aprendly</span> · Relatório educativo e orientativo · {DATA.simulado}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
+```
